@@ -51,37 +51,12 @@ class ResNet(nn.Module):
     def __init__(self, in_channels, block, layers):
         self.inplanes = 1
         super(ResNet, self).__init__()
-        self.Context_Conv2d_0a = BasicConv2d(1, 1, kernel_size=(1, 4), stride=(1, 4))
-        self.Context_Conv2d_1a = BasicConv2d(1, 1, kernel_size=(1, 1), stride=(1, 1))
-        self.layer1 = self._make_layer(block, 1, 1)
-
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.constant_(m.weight, 1)
-                nn.init.constant_(m.bias, 0)
-
-    def _make_layer(self, block, planes, blocks, stride=(1, 1)):
-        downsample = None
-        if stride != 1 or self.inplanes != planes * block.expansion:
-            downsample = nn.Sequential(
-                nn.Conv2d(self.inplanes, planes * block.expansion,
-                          kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(planes * block.expansion),
-            )
-        layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample))
-        self.inplanes = planes * block.expansion
-        for i in range(1, blocks):
-            layers.append(block(self.inplanes, planes))
-
-        return nn.Sequential(*layers)
+        self.Context_Conv2d_0a = BasicConv2d(in_channels, 2 * in_channels, kernel_size=(1, 3), stride=(1, 1))
+        self.Context_Conv2d_1a = BasicConv2d(2 * in_channels, 1, kernel_size=(1, 3), stride=(1, 2))
 
     def forward(self, x):
         x = self.Context_Conv2d_0a(x)
         x = self.Context_Conv2d_1a(x)
-        x = self.layer1(x)
 
         return x
 

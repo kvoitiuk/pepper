@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.11)
 
-# name of the project is VISION
+# name of the project is helen
 PROJECT(helen)
 set (CMAKE_CXX_FLAGS "-fPIC -O3")
 set (CMAKE_C_FLAGS "-fPIC -O3")

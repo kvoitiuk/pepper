@@ -6,7 +6,7 @@ import sys
 from build import HELEN
 from modules.python.TextColor import TextColor
 from modules.python.DataStore import DataStore
-from modules.python.AlignmentSummarizer import AlignmentSummarizer
+from modules.python.PileupCreator import PileupCreator
 from modules.python.Options import ImageSizeOptions
 
 
@@ -46,15 +46,15 @@ class UserInterfaceView:
         :param end_position: End position of the region
         :return:
         """
-        alignment_summarizer = AlignmentSummarizer(self.bam_handler,
-                                                   self.fasta_handler,
-                                                   self.chromosome_name,
-                                                   start_position,
-                                                   end_position)
+        pileup_creator = PileupCreator(self.bam_handler,
+                                       self.fasta_handler,
+                                       self.chromosome_name,
+                                       start_position,
+                                       end_position)
 
-        images, lables, positions, image_chunk_ids = alignment_summarizer.create_summary(self.truth_bam_handler,
-                                                                                         self.train_mode,
-                                                                                         realignment_flag=False)
+        images, lables, positions, image_chunk_ids = pileup_creator.create_pileup(self.truth_bam_handler,
+                                                                                  self.train_mode,
+                                                                                  realignment_flag=False)
 
         return images, lables, positions, image_chunk_ids
 
@@ -215,8 +215,8 @@ class UserInterfaceSupport:
 
                         output_hdf_file.write_summary(region, image, label, position, index, chunk_id, summary_name)
 
-                    # sys.stderr.write(TextColor.GREEN + "INFO: " + thread_prefix + " " + log_prefix + " TOTAL "
-                    #                  + str(len(images)) + " IMAGES SAVED\n" + TextColor.END)
+                    sys.stderr.write(TextColor.GREEN + "INFO: " + thread_prefix + " " + log_prefix + " TOTAL "
+                                     + str(len(images)) + " IMAGES SAVED\n" + TextColor.END)
 
                 # sys.stderr.write(TextColor.BLUE + "INFO: " + thread_prefix + " COMPLETED PROCESSING CHROMOSOME: " +
                 #                  chr_name + " TOTAL TIME ELAPSED: " + str(int(math.floor(time.time()-start_time)/60))

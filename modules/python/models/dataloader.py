@@ -46,6 +46,8 @@ class SequenceDataset(Dataset):
             image = hdf5_file['summaries'][image_name]['image'][()]
             label = hdf5_file['summaries'][image_name]['label'][()]
 
+        image = image.transpose()
+
         return image, label
 
     def __len__(self):

@@ -8,7 +8,7 @@
 #include "dataio/fasta_handler.h"
 #include "dataio/bam_handler.h"
 #include "realignment/aligner.h"
-#include "pileup_summary/summary_generator.h"
+#include "pileup_summary/pileup_generator.h"
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -16,14 +16,30 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(HELEN, m) {
-        py::class_<SummaryGenerator>(m, "SummaryGenerator")
-            .def(py::init<const string &, const string &, long long &, long long &>())
-            .def_readwrite("genomic_pos", &SummaryGenerator::genomic_pos)
-            .def_readwrite("labels", &SummaryGenerator::labels)
-            .def_readwrite("image", &SummaryGenerator::image)
-            .def_readwrite("bad_label_positions", &SummaryGenerator::bad_label_positions)
-            .def("generate_train_summary", &SummaryGenerator::generate_train_summary)
-            .def("generate_summary", &SummaryGenerator::generate_summary);
+        // data structure for read
+//        py::class_<PositionMap>(m, "PositionMap")
+//            .def_readwrite("ref_pos", &PositionMap::ref_pos)
+//            .def_readwrite("insert_pos", &PositionMap::insert_pos)
+//            .def(py::init<long long &, long long &>())
+//            .def(py::init())
+//            .def("__lt__", &PositionMap::operator<, py::is_operator());
+
+//        py::class_<ImagePixel>(m, "ImagePixel")
+//            .def_readwrite("base_color", &ImagePixel::base_color)
+//            .def_readwrite("base_quality_color", &ImagePixel::base_quality_color)
+//            .def_readwrite("map_quality_color", &ImagePixel::map_quality_color)
+//            .def_readwrite("strand_color", &ImagePixel::strand_color)
+//            .def(py::init<char &, int &, int &, bool &>());
+
+        py::class_<PileupGenerator>(m, "PileupGenerator")
+            .def(py::init<const string &, const string &, long long &, long long &, bool &>())
+            .def_readwrite("genomic_pos", &PileupGenerator::genomic_pos)
+            .def_readwrite("labels", &PileupGenerator::labels)
+            .def_readwrite("image", &PileupGenerator::image)
+            .def_readwrite("bad_label_positions", &PileupGenerator::bad_label_positions)
+            .def("debug_print", &PileupGenerator::debug_print)
+            .def("generate_labels", &PileupGenerator::generate_labels)
+            .def("generate_summary", &PileupGenerator::generate_summary);
 
         // Alignment CLASS
         py::class_<StripedSmithWaterman::Alignment>(m, "Alignment")

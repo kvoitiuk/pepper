@@ -112,16 +112,17 @@ vector<string> BAM_handler::get_chromosome_sequence_names() {
     return sequence_names;
 }
 
-vector<type_read> BAM_handler::get_reads(string chromosome,
-                                                   long long start,
-                                                   long long stop,
-                                                   bool include_supplementary,
-                                                   int min_mapq=0,
-                                                   int min_baseq = 0) {
+pair< vector<type_read>, map<long long, int> >  BAM_handler::get_reads(string chromosome,
+                                                                       long long start,
+                                                                       long long stop,
+                                                                       bool include_supplementary,
+                                                                       int min_mapq=0,
+                                                                       int min_baseq = 0) {
     // safe bases
     stop += 5;
-
     vector <type_read> all_reads;
+    map<long long, int> longest_insert_count;
+
 
     // get the id of the chromosome
     const int tid = bam_name2id(this->header, chromosome.c_str());
@@ -151,6 +152,9 @@ vector<type_read> BAM_handler::get_reads(string chromosome,
 
         // get query name
         string query_name = bam_get_qname(alignment);
+
+        // mapping quality
+        int map_quality = alignment->core.qual;
 
         // get the position where it gets aligned
         int32_t pos = alignment->core.pos;
@@ -242,6 +246,10 @@ vector<type_read> BAM_handler::get_reads(string chromosome,
                     modified_cigar_length = 0;
                     // this only happens after the first position, I am also forcing an anchor
                     if(current_read_pos >= start && current_read_pos <= stop && pos_start != -1) {
+                        if(cigar_op == BAM_CINS && map_quality > 0) {
+                            longest_insert_count[current_read_pos] = max(longest_insert_count[current_read_index],
+                                    cigar_len);
+                        }
                         for(int i=0; i < cigar_len ; i++) {
                             // we are adding the base and quality
                             int base_quality = (int) qual[current_read_index];
@@ -306,8 +314,7 @@ vector<type_read> BAM_handler::get_reads(string chromosome,
         }
         bad_bases.push_back(read_seq.length() + 1);
 
-        // mapping quality
-        int map_quality = alignment->core.qual;
+
 
         // handle auxiliary data
         uint8_t* s = bam_get_aux(alignment);
@@ -429,13 +436,18 @@ vector<type_read> BAM_handler::get_reads(string chromosome,
         read.cigar_tuples = cigar_tuples;
         read.bad_indicies = bad_bases;
         read.hp_tag = HP_tag;
+        if(read.flags.is_read1)
+            read.read_id = query_name + "_1";
+        else
+            read.read_id = query_name + "_2";
 
         all_reads.push_back(read);
     }
     bam_destroy1(alignment);
     hts_itr_destroy(iter);
 
-    return all_reads;
+    pair< vector<type_read>, map<long long, int> > read_insert_count_pair = make_pair(all_reads, longest_insert_count);
+    return read_insert_count_pair;
 }
 
 BAM_handler::~BAM_handler() {

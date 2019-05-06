@@ -106,10 +106,10 @@ struct type_read{
     vector <int> bad_indicies;
     int mapping_quality;
     vector <int> base_qualities;
-    int read_id;
+    string read_id;
     int hp_tag;
 
-    void set_read_id(int id) {
+    void set_read_id(string id) {
         this->read_id = id;
     }
 
@@ -176,12 +176,12 @@ class BAM_handler {
         BAM_handler(string path);
 
         // this will divide reads in haplotype bins and then return
-        vector<type_read> get_reads(string region,
-                                    long long start,
-                                    long long stop,
-                                    bool include_supplementary,
-                                    int min_mapq,
-                                    int min_baseq);
+        pair< vector<type_read>, map<long long, int> > get_reads(string region,
+                                                                 long long start,
+                                                                 long long stop,
+                                                                 bool include_supplementary,
+                                                                 int min_mapq,
+                                                                 int min_baseq);
         vector<string> get_chromosome_sequence_names();
         vector<type_sequence> get_chromosome_sequence_names_with_length();
         set<string> get_sample_names();

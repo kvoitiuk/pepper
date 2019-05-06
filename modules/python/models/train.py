@@ -154,7 +154,7 @@ def train(train_file, test_file, batch_size, epoch_limit, gpu_mode, num_workers,
                     if i + TrainOptions.TRAIN_WINDOW > ImageSizeOptions.SEQ_LENGTH:
                         break
 
-                    image_chunk = images[:, i:i+TrainOptions.TRAIN_WINDOW]
+                    image_chunk = images[:, :, i:i+TrainOptions.TRAIN_WINDOW, :]
                     label_chunk = labels[:, i:i+TrainOptions.TRAIN_WINDOW]
 
                     output_, hidden = transducer_model(image_chunk, hidden)

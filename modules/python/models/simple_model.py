@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+from modules.python.Options import ImageSizeOptions, TrainOptions
+from modules.python.models.resnet import resnet18_custom
 
 
 class TransducerGRU(nn.Module):
@@ -9,7 +11,9 @@ class TransducerGRU(nn.Module):
         self.bidirectional = bidirectional
         self.num_layers = gru_layers
         self.num_classes = num_classes
-        self.gru_encoder = nn.GRU(image_features,
+
+        self.cnn_encoder = resnet18_custom(ImageSizeOptions.IMAGE_CHANNELS)
+        self.gru_encoder = nn.GRU(48,
                                   hidden_size,
                                   num_layers=self.num_layers,
                                   bidirectional=bidirectional,
@@ -26,8 +30,12 @@ class TransducerGRU(nn.Module):
 
     def forward(self, x, hidden):
         hidden = hidden.transpose(0, 1).contiguous()
+        batch_size = x.size(0)
+        seq_length = x.size(2)
+        x_features = self.cnn_encoder(x).view(batch_size, seq_length, -1)
+
         # self.gru.flatten_parameters()
-        x_out, hidden_out = self.gru_encoder(x, hidden)
+        x_out, hidden_out = self.gru_encoder(x_features, hidden)
         x_out, hidden_final = self.gru_decoder(x_out, hidden_out)
 
         x_out = self.dense1(x_out)
