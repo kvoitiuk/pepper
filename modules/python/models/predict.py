@@ -56,7 +56,7 @@ def predict(test_file, output_filename, model_path, batch_size, num_workers, gpu
             if gpu_mode:
                 hidden = hidden.cuda()
 
-            prediction_base_dict = np.zeros((images.size(0), images.size(1), ImageSizeOptions.TOTAL_LABELS))
+            prediction_base_dict = np.zeros((images.size(0), ImageSizeOptions.SEQ_LENGTH, ImageSizeOptions.TOTAL_LABELS))
 
             for i in range(0, ImageSizeOptions.SEQ_LENGTH, TrainOptions.WINDOW_JUMP):
                 if i + TrainOptions.TRAIN_WINDOW > ImageSizeOptions.SEQ_LENGTH:
@@ -64,8 +64,7 @@ def predict(test_file, output_filename, model_path, batch_size, num_workers, gpu
                 chunk_start = i
                 chunk_end = i + TrainOptions.TRAIN_WINDOW
                 # chunk all the data
-                image_chunk = images[:, chunk_start:chunk_end]
-
+                image_chunk = images[:, :, chunk_start:chunk_end, :]
                 # run inference
                 output_base, hidden = transducer_model(image_chunk, hidden)
 

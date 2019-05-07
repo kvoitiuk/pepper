@@ -51,6 +51,8 @@ class SequenceDataset(Dataset):
             contig_start = hdf5_file['summaries'][image_name]['region_start'][()]
             contig_end = hdf5_file['summaries'][image_name]['region_end'][()]
 
+        image = image.transpose()
+
         return contig, contig_start, contig_end, chunk_id, image, position, index
 
     def __len__(self):
