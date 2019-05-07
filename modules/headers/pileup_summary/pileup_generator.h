@@ -18,9 +18,9 @@ using namespace std;
 
 
 namespace ImageOptions {
-    static constexpr uint8_t MAX_COLOR_VALUE = 254;
-    static constexpr uint8_t BASE_QUALITY_CAP = 40;
-    static constexpr uint8_t MAP_QUALITY_CAP = 60;
+    static constexpr int MAX_COLOR_VALUE = 254;
+    static constexpr int BASE_QUALITY_CAP = 40;
+    static constexpr int MAP_QUALITY_CAP = 60;
     static constexpr int IMAGE_HEIGHT = 100;
     static constexpr int IMAGE_CHANNELS = 3;
 };

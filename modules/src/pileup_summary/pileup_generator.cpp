@@ -117,7 +117,7 @@ void PileupGenerator::iterate_over_read(type_read read, long long region_start, 
                         pixel_summaries[read_position] = pixel_value;
                     }
                     longest_insert_count[ref_position - 1] = std::max(longest_insert_count[ref_position - 1],
-                                                                      (long long) alt.length());
+                                                                      (int) alt.length());
                 }
                 read_index += cigar.length;
                 break;
