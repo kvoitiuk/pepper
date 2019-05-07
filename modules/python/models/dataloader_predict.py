@@ -30,6 +30,7 @@ class SequenceDataset(Dataset):
         hdf_files = get_file_paths_from_directory(image_directory)
 
         for hdf5_file_path in hdf_files:
+            print("READING FROM: ", hdf5_file_path)
             with h5py.File(hdf5_file_path, 'r') as hdf5_file:
                 image_names = list(hdf5_file['summaries'].keys())
 
