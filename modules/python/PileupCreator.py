@@ -243,6 +243,24 @@ class PileupCreator:
                 if total_reads == 0:
                     continue
 
+                if total_reads == 0:
+                    return [], [], [], []
+
+                if total_reads > AlingerOptions.MAX_READS_IN_REGION:
+                    # https://github.com/google/nucleus/blob/master/nucleus/util/utils.py
+                    # reservoir_sample method utilized here
+                    random = np.random.RandomState(AlingerOptions.RANDOM_SEED)
+                    sample = []
+                    for i, read in enumerate(all_reads):
+                        if len(sample) < AlingerOptions.MAX_READS_IN_REGION:
+                            sample.append(read)
+                        else:
+                            j = random.randint(0, i + 1)
+                            if j < AlingerOptions.MAX_READS_IN_REGION:
+                                sample[j] = read
+
+                    all_reads = sample
+
                 sys.stderr.write(TextColor.GREEN + "INFO: " + log_prefix + " TOTAL " + str(total_reads)
                                  + " READS FOUND.\n" + TextColor.END)
 
@@ -295,34 +313,23 @@ class PileupCreator:
             if total_reads == 0:
                 return [], [], [], []
 
-            # if total_reads > AlingerOptions.MAX_READS_IN_REGION:
-            #     # https://github.com/google/nucleus/blob/master/nucleus/util/utils.py
-            #     # reservoir_sample method utilized here
-            #     all_reads = reads_un + reads_hp1 + reads_hp2
-            #     random = np.random.RandomState(AlingerOptions.RANDOM_SEED)
-            #     sample = []
-            #     for i, read in enumerate(all_reads):
-            #         if len(sample) < AlingerOptions.MAX_READS_IN_REGION:
-            #             sample.append(read)
-            #         else:
-            #             j = random.randint(0, i + 1)
-            #             if j < AlingerOptions.MAX_READS_IN_REGION:
-            #                 sample[j] = read
-            #
-            #     reads_un = []
-            #     reads_hp1 = []
-            #     reads_hp2 = []
-            #     for read in sample:
-            #         if read.hp_tag == 1:
-            #             reads_hp1.append(read)
-            #         elif read.hp_tag == 2:
-            #             reads_hp2.append(read)
-            #         else:
-            #             reads_un.append(read)
-            #     assert(len(sample) == len(reads_un) + len(reads_hp1) + len(reads_hp2))
+            if total_reads > AlingerOptions.MAX_READS_IN_REGION:
+                # https://github.com/google/nucleus/blob/master/nucleus/util/utils.py
+                # reservoir_sample method utilized here
+                random = np.random.RandomState(AlingerOptions.RANDOM_SEED)
+                sample = []
+                for i, read in enumerate(all_reads):
+                    if len(sample) < AlingerOptions.MAX_READS_IN_REGION:
+                        sample.append(read)
+                    else:
+                        j = random.randint(0, i + 1)
+                        if j < AlingerOptions.MAX_READS_IN_REGION:
+                            sample[j] = read
 
-            # sys.stderr.write(TextColor.PURPLE + "INFO: " + log_prefix + " TOTAL " + str(total_reads) + " READS FOUND\n"
-            #                  + TextColor.END)
+                all_reads = sample
+
+            sys.stderr.write(TextColor.PURPLE + "INFO: " + log_prefix + " TOTAL " + str(total_reads) + " READS FOUND\n"
+                             + TextColor.END)
 
             if realignment_flag:
                 start_time = time.time()
