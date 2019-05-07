@@ -74,7 +74,7 @@ def get_confident_positions(alignment):
     read_index = 0
 
     for cigar_op, cigar_len in grouped_tuples:
-        if cigar_op == 'M' and cigar_len >= 9:
+        if cigar_op == 'M' and cigar_len >= 3:
             return ref_index, read_index
 
         if cigar_op == 'S':
@@ -122,6 +122,9 @@ def alignment_stitch(sequence_chunks):
             pos_a, pos_b = get_confident_positions(alignment)
 
             if pos_a == -1 or pos_b == -1:
+                print(alignment.reference_begin)
+                print(len(reference_sequence), len(read_sequence))
+                print(alignment.cigar_string)
                 sys.stderr.write(TextColor.RED + "ERROR: NO OVERLAPS: " + str(sequence_chunks[i]) + "\n" + TextColor.END)
                 sys.stderr.write(TextColor.RED + "ERROR: CURRENT " + str(this_start) + " " + str(this_end) + "\n" + TextColor.END)
                 sys.stderr.write(TextColor.RED + "ERROR: RUNNING " + str(running_end) + "\n" + TextColor.END)
