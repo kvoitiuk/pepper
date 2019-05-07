@@ -18,18 +18,18 @@ using namespace std;
 
 
 namespace ImageOptions {
-    static constexpr int MAX_COLOR_VALUE = 254;
-    static constexpr int BASE_QUALITY_CAP = 40;
-    static constexpr int MAP_QUALITY_CAP = 60;
+    static constexpr uint8_t MAX_COLOR_VALUE = 254;
+    static constexpr uint8_t BASE_QUALITY_CAP = 40;
+    static constexpr uint8_t MAP_QUALITY_CAP = 60;
     static constexpr int IMAGE_HEIGHT = 100;
     static constexpr int IMAGE_CHANNELS = 3;
 };
 
 struct ImagePixel{
-    int base_color;
-    int base_quality_color;
-    int map_quality_color;
-    int strand_color;
+    uint8_t base_color;
+    uint8_t base_quality_color;
+    uint8_t map_quality_color;
+    uint8_t strand_color;
 
     ImagePixel(char base, int mapping_quality, int base_quality, bool is_reverse) {
         map<char, uint8_t> global_base_color = {{'C', 50}, {'T', 100}, {'G', 150},
@@ -63,35 +63,20 @@ struct ImagePixel{
 
 struct PositionMap {
     long long ref_pos;
-    long long insert_pos;
+    int insert_pos;
 
-    PositionMap(long long rp, long long ip) {
+    PositionMap(long long rp, int ip) {
         ref_pos = rp;
         insert_pos = ip;
     }
-//    PositionMap() {
-//        ref_pos = -1;
-//        insert_pos = -1;
-//    }
-//    const bool operator<(const PositionMap& that) {
-//        if(this->ref_pos == that.ref_pos) {
-//            return this->insert_pos < that.insert_pos;
-//        } else {
-//            return this->ref_pos < that.ref_pos;
-//        }
-//    }
-//    void operator=(const PositionMap& that) {
-//        this->ref_pos = that.ref_pos;
-//        this->insert_pos = that.insert_pos;
-//    }
 };
 
 struct ReadPositionMap {
     string read_id;
     long long ref_pos;
-    long long insert_pos;
+    int insert_pos;
 
-    ReadPositionMap(string rid, long long rp, long long ip) {
+    ReadPositionMap(string rid, long long rp, int ip) {
         ref_pos = rp;
         insert_pos = ip;
         read_id = rid;
@@ -133,7 +118,7 @@ class PileupGenerator {
     map<ReadPositionMap, ImagePixel, ReadPositionMapComparator> pixel_summaries;
     map<PositionMap, int, PositionMapComparator> position_to_image_index;
     map<string, pair<long long, long long> > read_start_end_map;
-    map<long long, long long> longest_insert_count;
+    map<long long, int> longest_insert_count;
     map<long long, double> coverage;
 
     map< pair<long long, int>, char> insert_labels;

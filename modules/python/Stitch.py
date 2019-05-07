@@ -123,6 +123,8 @@ def alignment_stitch(sequence_chunks):
 
             if pos_a == -1 or pos_b == -1:
                 sys.stderr.write(TextColor.RED + "ERROR: NO OVERLAPS: " + str(sequence_chunks[i]) + "\n" + TextColor.END)
+                sys.stderr.write(TextColor.RED + "ERROR: CURRENT" + str(this_start) + " " + str(this_end) + "\n" + TextColor.END)
+                sys.stderr.write(TextColor.RED + "ERROR: RUNNING" + str(running_end) + "\n" + TextColor.END)
                 return None
             left_sequence = running_sequence[:-(overlap_bases-pos_a)]
             right_sequence = this_sequence[pos_b:]
