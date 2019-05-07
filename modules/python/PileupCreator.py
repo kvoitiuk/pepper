@@ -281,8 +281,8 @@ class PileupCreator:
             # HERE REALIGN THE READS TO THE REFERENCE THEN GENERATE THE SUMMARY TO GET A POLISHED HAPLOTYPE
             read_start = max(0, self.region_start_position - AlingerOptions.ALIGNMENT_SAFE_BASES)
             read_end = self.region_end_position + AlingerOptions.ALIGNMENT_SAFE_BASES
-            include_supplementary = True
 
+            include_supplementary = True
             all_reads, longest_insert_counts = self.bam_handler.get_reads(self.chromosome_name,
                                                                           read_start,
                                                                           read_end,
@@ -321,8 +321,8 @@ class PileupCreator:
             #             reads_un.append(read)
             #     assert(len(sample) == len(reads_un) + len(reads_hp1) + len(reads_hp2))
 
-            sys.stderr.write(TextColor.PURPLE + "INFO: " + log_prefix + " TOTAL " + str(total_reads) + " READS FOUND\n"
-                             + TextColor.END)
+            # sys.stderr.write(TextColor.PURPLE + "INFO: " + log_prefix + " TOTAL " + str(total_reads) + " READS FOUND\n"
+            #                  + TextColor.END)
 
             if realignment_flag:
                 start_time = time.time()
