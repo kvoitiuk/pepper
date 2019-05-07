@@ -215,6 +215,8 @@ class UserInterfaceSupport:
 
                         output_hdf_file.write_summary(region, image, label, position, index, chunk_id, summary_name)
 
+                    del images, labels, positions, chunk_ids, region
+
                     # sys.stderr.write(TextColor.GREEN + "INFO: " + thread_prefix + " " + log_prefix + " TOTAL "
                     #                  + str(len(images)) + " IMAGES SAVED\n" + TextColor.END)
 

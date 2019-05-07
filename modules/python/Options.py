@@ -6,7 +6,7 @@ class ImageSizeOptions(object):
     LABEL_LENGTH = SEQ_LENGTH
 
     TOTAL_LABELS = 5
-    MIN_SEQUENCE_LENGTH = 100
+    MIN_SEQUENCE_LENGTH = 1000
     MIN_IMAGE_OVERLAP = 100
 
 

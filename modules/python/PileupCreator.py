@@ -21,7 +21,7 @@ class PileupCreator:
         chunk_start = 0
         chunk_id = 0
         chunk_end = min(len(summary.genomic_pos), chunk_size)
-        image = np.array(summary.image)
+        image = np.array(summary.image, dtype=np.uint8)
         images = []
         labels = []
         positions = []
@@ -356,6 +356,8 @@ class PileupCreator:
             all_labels.extend(labels)
             all_positions.extend(positions)
             all_image_chunk_ids.extend(chunk_ids)
+
+            del pileup_generator
 
         assert(len(all_images) == len(all_labels) == len(all_image_chunk_ids))
 
