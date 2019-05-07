@@ -217,9 +217,9 @@ class UserInterfaceSupport:
 
                     del images, labels, positions, chunk_ids, region
 
-                    # sys.stderr.write(TextColor.GREEN + "INFO: " + thread_prefix + " " + log_prefix + " TOTAL "
-                    #                  + str(len(images)) + " IMAGES SAVED\n" + TextColor.END)
+                    sys.stderr.write(TextColor.GREEN + "INFO: " + thread_prefix + " " + log_prefix + " TOTAL "
+                                     + str(len(images)) + " IMAGES SAVED\n" + TextColor.END)
 
-                # sys.stderr.write(TextColor.BLUE + "INFO: " + thread_prefix + " COMPLETED PROCESSING CHROMOSOME: " +
-                #                  chr_name + " TOTAL TIME ELAPSED: " + str(int(math.floor(time.time()-start_time)/60))
-                #                  + " MINS " + str(math.ceil(time.time()-start_time) % 60) + " SEC\n" + TextColor.END)
+                sys.stderr.write(TextColor.BLUE + "INFO: " + thread_prefix + " COMPLETED PROCESSING CHROMOSOME: " +
+                                 chr_name + " TOTAL TIME ELAPSED: " + str(int(math.floor(time.time()-start_time)/60))
+                                 + " MINS " + str(math.ceil(time.time()-start_time) % 60) + " SEC\n" + TextColor.END)
