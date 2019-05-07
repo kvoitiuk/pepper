@@ -328,8 +328,8 @@ class PileupCreator:
 
                 all_reads = sample
 
-            sys.stderr.write(TextColor.PURPLE + "INFO: " + log_prefix + " TOTAL " + str(total_reads) + " READS FOUND\n"
-                             + TextColor.END)
+                sys.stderr.write(TextColor.PURPLE + "INFO: " + log_prefix + " TOTAL " + str(total_reads)
+                                 + " READS DOWN-SAMPLED TO: " + str(len(all_reads)) + TextColor.END)
 
             if realignment_flag:
                 start_time = time.time()
