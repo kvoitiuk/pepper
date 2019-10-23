@@ -97,14 +97,28 @@ def get_confident_positions(alignment):
 def alignment_stitch(sequence_chunks):
     sequence_chunks = sorted(sequence_chunks, key=lambda element: (element[1], element[2]))
     contig, running_start, running_end, running_sequence = sequence_chunks[0]
+
+    start_index = 0
+    while start_index < len(sequence_chunks):
+        contig, running_start, running_end, running_sequence = sequence_chunks[start_index]
+        if not running_sequence:
+            start_index += 1
+            continue
+        else:
+            start_index += 1
+            break
+
     # if len(running_sequence) < 500:
     #     sys.stderr.write("ERROR: CURRENT SEQUENCE LENGTH TOO SHORT: " + sequence_chunk_keys[0] + "\n")
     #     exit()
 
     aligner = PEPPER.Aligner(MATCH_PENALTY, MISMATCH_PENALTY, GAP_PENALTY, GAP_EXTEND_PENALTY)
     filter = PEPPER.Filter()
-    for i in range(1, len(sequence_chunks)):
+    for i in range(start_index, len(sequence_chunks)):
         _, this_start, this_end, this_sequence = sequence_chunks[i]
+        if not this_sequence:
+            continue
+
         if this_start < running_end:
             # overlap
             overlap_bases = running_end - this_start
@@ -116,7 +130,7 @@ def alignment_stitch(sequence_chunks):
             aligner.SetReferenceSequence(reference_sequence, len(reference_sequence))
             aligner.Align_cpp(read_sequence, filter, alignment, 0)
             if alignment.best_score == 0:
-                sys.stderr.write("ERROR: NO ALIGNMENTS FOUND")
+                sys.stderr.write("ERROR: NO ALIGNMENTS FOUND\n")
                 exit()
                 continue
 
@@ -129,6 +143,10 @@ def alignment_stitch(sequence_chunks):
             right_sequence = this_sequence[pos_b:]
 
             running_sequence = left_sequence + right_sequence
+            running_end = this_end
+        elif this_start > running_end:
+            # no chunking, simply add
+            running_sequence = running_sequence + this_sequence
             running_end = this_end
         else:
             sys.stderr.write(TextColor.RED + "ERROR: NO OVERLAP: POSSIBLE ERROR"
