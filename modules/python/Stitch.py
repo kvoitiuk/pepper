@@ -130,20 +130,40 @@ def alignment_stitch(sequence_chunks):
             aligner.SetReferenceSequence(reference_sequence, len(reference_sequence))
             aligner.Align_cpp(read_sequence, filter, alignment, 0)
             if alignment.best_score == 0:
-                sys.stderr.write("ERROR: NO ALIGNMENTS FOUND\n")
-                exit()
+                sys.stderr.write(TextColor.YELLOW + "WARNING: NO ALIGNMENT FOUND: " + str(this_start)
+                                 + " " + str(this_end) + "\n" + TextColor.END)
+                # this is a special case, happens when we encounter a region that is empty. In this case what we do
+                # is append 50 Ns to compensate for the overlap regions and then add the next chunk. This happens
+                # very rarely but happens for sure.
+                if len(read_sequence) > 0:
+                    running_sequence = running_sequence + 10 * 'N'
+                    running_sequence = running_sequence + read_sequence
+                    running_end = this_end
                 continue
 
             pos_a, pos_b = get_confident_positions(alignment)
 
             if pos_a == -1 or pos_b == -1:
-                sys.stderr.write(TextColor.RED + "ERROR: NO OVERLAPS: " + str(sequence_chunks[i]) + "\n" + TextColor.END)
-                return None
-            left_sequence = running_sequence[:-(overlap_bases-pos_a)]
-            right_sequence = this_sequence[pos_b:]
+                sys.stderr.write(TextColor.YELLOW + "WARNING: NO OVERLAPS IN ALIGNMENT : \n" + TextColor.END)
+                sys.stderr.write(TextColor.YELLOW + "LEFT : " + str(reference_sequence) + "\n" +
+                                 TextColor.END)
+                sys.stderr.write(TextColor.YELLOW + "RIGHT: " + str(read_sequence) + "\n" +
+                                 TextColor.END)
+                sys.stderr.write(TextColor.YELLOW + "CIGAR: " + str(alignment.cigar_string) + "\n" +
+                                 TextColor.END)
+                if len(this_sequence) > 00:
+                    # left_sequence = running_sequence[:-overlap_bases]
+                    # overlap_sequence = left_sequence
+                    running_sequence = running_sequence + 10 * 'N'
+                    running_sequence = running_sequence + read_sequence
+                    running_end = this_end
+            else:
+                left_sequence = running_sequence[:-(overlap_bases-pos_a)]
+                right_sequence = this_sequence[pos_b:]
 
-            running_sequence = left_sequence + right_sequence
-            running_end = this_end
+                running_sequence = left_sequence + right_sequence
+                running_end = this_end
+
         elif this_start > running_end:
             # no chunking, simply add
             running_sequence = running_sequence + this_sequence
