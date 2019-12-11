@@ -16,30 +16,30 @@ SummaryGenerator::SummaryGenerator(string reference_sequence, string chromosome_
 int get_feature_index(char base, bool is_reverse) {
     base = toupper(base);
     if (is_reverse) {
-        if (base == 'A') return 0;
-        if (base == 'C') return 1;
-        if (base == 'G') return 2;
-        if (base == 'T') return 3;
-        return 8;
+        if (base == 'A') return 1; //0
+        if (base == 'C') return 3; //1
+        if (base == 'G') return 8; //2
+        if (base == 'T') return 2; //3
+        return 0; //8
     } else {
         // tagged and forward
-        if (base == 'A') return 4;
-        if (base == 'C') return 5;
-        if (base == 'G') return 6;
-        if (base == 'T') return 7;
-        return 9;
+        if (base == 'A') return 7; //4
+        if (base == 'C') return 4; //5
+        if (base == 'G') return 6; //6
+        if (base == 'T') return 9; //7
+        return 5; //9
     }
 }
 
 
 uint8_t get_labels(char base) {
     base = toupper(base);
-    if (base == 'A') return 1;
-    if (base == 'C') return 2;
-    if (base == 'G') return 3;
-    if (base == 'T') return 4;
-    if (base == '*') return 0; // this is for deleted bases, but the number is so small that it creates confusion
-    if (base == '#') return 0;
+    if (base == 'A') return 1; //1
+    if (base == 'C') return 2; //2
+    if (base == 'G') return 3; //3
+    if (base == 'T') return 4; //4
+    if (base == '*') return 0; //0 // this is for deleted bases, but the number is so small that it creates confusion
+    if (base == '#') return 0; //0
     return 0;
 }
 
@@ -252,16 +252,16 @@ void SummaryGenerator::debug_print(long long start_pos, long long end_pos) {
 
     cout << "-------------" << endl;
     for (int i = 0; i < image[0].size(); i++) {
-        if(i==0)cout<<"AFW:\t";
-        if(i==1)cout<<"CFW:\t";
-        if(i==2)cout<<"GFW:\t";
-        if(i==3)cout<<"TFW:\t";
-        if(i==4)cout<<"ARV:\t";
-        if(i==5)cout<<"CRV:\t";
-        if(i==6)cout<<"GRV:\t";
-        if(i==7)cout<<"TRV:\t";
-        if(i==8)cout<<"GFW:\t";
-        if(i==9)cout<<"GRV:\t";
+        if(i==7)cout<<"AFW:\t"; //i==0
+        if(i==4)cout<<"CFW:\t"; //i==1
+        if(i==6)cout<<"GFW:\t"; //i==2
+        if(i==9)cout<<"TFW:\t"; //i==3
+        if(i==1)cout<<"ARV:\t"; //i==4
+        if(i==3)cout<<"CRV:\t"; //i==5
+        if(i==8)cout<<"GRV:\t"; //i==6
+        if(i==2)cout<<"TRV:\t"; //i==7
+        if(i==5)cout<<"*FW:\t"; //i==8
+        if(i==0)cout<<"*RV:\t"; //i==9
 
         for (int j = 0; j < image.size(); j++) {
             printf("%3d\t", image[j][i]);
@@ -311,8 +311,7 @@ void SummaryGenerator::generate_train_summary(vector <type_read> &reads,
                                               long long start_pos,
                                               long long end_pos,
                                               type_read truth_read) {
-
-
+    //cout<<start_pos<<" "<<end_pos<<endl;
     for (auto &read:reads) {
         // this populates base_summaries and insert_summaries dictionaries
         if(read.mapping_quality > 0) {
@@ -363,7 +362,7 @@ void SummaryGenerator::generate_train_summary(vector <type_read> &reads,
     generate_image(start_pos, end_pos);
 //     at this point everything should be generated
 //    debug_print(start_pos, end_pos);
-//    exit(1);
+//    exit(0);
 }
 
 
@@ -379,7 +378,9 @@ void SummaryGenerator::generate_summary(vector <type_read> &reads,
 
     // after all the dictionaries are populated, we can simply walk through the region and generate a sequence
     for (long long pos = start_pos; pos <= end_pos; pos++) {
+        // this is for backbone positions
         genomic_pos.push_back(make_pair(pos, 0));
+        // this is for insert position
         if (longest_insert_count[pos] > 0) {
             for (int ii = 0; ii < longest_insert_count[pos]; ii++) {
                 genomic_pos.push_back(make_pair(pos, ii + 1));
@@ -390,4 +391,5 @@ void SummaryGenerator::generate_summary(vector <type_read> &reads,
     generate_image(start_pos, end_pos);
 //     at this point everything should be generated
 //    debug_print(start_pos, end_pos);
+//    exit(0);
 }

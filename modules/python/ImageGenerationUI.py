@@ -165,11 +165,14 @@ class UserInterfaceSupport:
                          + " FOR " + str(len(intervals)) + " INTERVALS\n" + TextColor.END)
         sys.stderr.flush()
 
+
+        #image generation-----------------------------
         start_time = time.time()
         with DataStore(file_name, 'w') as output_hdf_file:
             for counter, interval in enumerate(intervals):
                 chr_name, _start, _end = interval
                 img_args = (chr_name, bam_file, draft_file, truth_bam, train_mode)
+
                 images, labels, positions, chunk_ids, region = UserInterfaceSupport.single_worker(img_args, _start, _end)
 
                 for i, image in enumerate(images):
@@ -180,6 +183,7 @@ class UserInterfaceSupport:
                     summary_name = str(region[0]) + "_" + str(region[1]) + "_" + str(region[2]) + "_" + str(chunk_id)
 
                     output_hdf_file.write_summary(region, image, label, position, index, chunk_id, summary_name)
+        #-----------------------------------------------
 
                 if counter > 0 and counter % 100 == 0:
                     percent_complete = int((100 * counter) / len(intervals))

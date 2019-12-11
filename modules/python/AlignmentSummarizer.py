@@ -165,7 +165,6 @@ class AlignmentSummarizer:
 
         ref_start = region_start
         ref_end = region_end + AlingerOptions.ALIGNMENT_SAFE_BASES
-
         ref_sequence = self.fasta_handler.get_reference_sequence(self.chromosome_name,
                                                                  ref_start,
                                                                  ref_end)
@@ -293,6 +292,7 @@ class AlignmentSummarizer:
             read_start = max(0, self.region_start_position)
             read_end = self.region_end_position
             include_supplementary = False
+            # fetch all the reads
             all_reads = self.bam_handler.get_reads(self.chromosome_name,
                                                    read_start,
                                                    read_end,
