@@ -1,34 +1,22 @@
-#
 #!/usr/bin/env fish
 
+set SRC_PTH "/data/users/kvoitiuk/pepper_outputs/r10_native_microbial_early_basecaller/"
+set NUM_THREADS 30
 
-#-------------------------
 
-#Train model, validate
+##Train model, validate-------------------------
+set TRAIN_FILE $SRC_PTH"train_images/"
+set TEST_FILE $SRC_PTH"test_images/"
+set OUT_DIR $SRC_PTH"model_out/"
+
 python3 pepper_train.py \
---train_file /data/users/kvoitiuk/pepper_outputs/train_images/ \
---test_file /data/users/kvoitiuk/pepper_outputs/test_images/ \
+--train_file $TRAIN_FILE \
+--test_file $TEST_FILE \
 --batch_size 512 \
 --epoch_size 100 \
---model_out /data/users/kvoitiuk/pepper_outputs/model_out/ \
---num_workers 30 \
+--model_out $OUT_DIR \
+--num_workers $NUM_THREADS \
 --gpu_mode true
 
 
 #Pick best model...
-
-
-#Inference
-python3 2_pepper_call_consensus.py \
--i /data/users/kvoitiuk/pepper_outputs/validation_images \
--m /data/users/kvoitiuk/pepper_outputs/model_out/trained_models_12112019_145832/_epoch_17_checkpoint.pkl \
--b 512 \
--w 30 \
--o /data/users/kvoitiuk/pepper_outputs/polished_sequences/_epoch_17_output_polished_sequence/
--g
-
-#Stitch
-python3 3_pepper_stitch.py \
--i /data/users/kvoitiuk/pepper_outputs/polished_sequences/_epoch_17_output_polished_sequence/pepper_predictions.hdf \
--o /data/users/kvoitiuk/pepper_outputs/polished_sequences/_epoch_17_output_polished_sequence/ \
--t 30

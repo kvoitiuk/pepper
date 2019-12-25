@@ -8,6 +8,7 @@ set NUM_THREADS 30
 
 
 #Validation images--------------------------------------
+echo "Generating Validation Images"
 set BAM $DATA_SRC_PTH"validation_data/Microbial.readsR10NativeG01a_to_shastaR94G305.validate_StaphAur.bam"
 set DRAFT $DATA_SRC_PTH"validation_data/Microbial.shasta_assembly_validate_staph_aur.fasta"
 
@@ -17,8 +18,11 @@ python3 1_pepper_make_images.py \
       --output_dir $IMAGE_OUTPUT_PTH"validation_images/" \
       --threads $NUM_THREADS
 
+echo "Done"
 
 #Train images--------------------------------------
+echo "Generating Train Images"
+
 set BAM $DATA_SRC_PTH"train_data/Microbial.readsR10NativeG01a_to_shastaR94G305.train_noEcoli_noStaphAur.bam"
 set DRAFT $DATA_SRC_PTH"train_data/Microbial.shasta_assembly_train_noEcoli_noStaphAur.fasta"
 set TRUTH_BAM $DATA_SRC_PTH"train_data/Microbial.truth_2_shasta.train_noEcoli_noStaphAur.bam"
@@ -31,7 +35,11 @@ python3 1_pepper_make_images.py \
       --output_dir $IMAGE_OUTPUT_PTH"train_images/" \
       --threads $NUM_THREADS
 
+echo "Done"
+
 #Test images--------------------------------------
+echo "Generating Test Images"
+
 set BAM $DATA_SRC_PTH"test_data/Microbial.readsR10NativeG01a_to_shastaR94G305.test_Ecoli.bam"
 set DRAFT $DATA_SRC_PTH"test_data/Microbial.shasta_assembly_test_Ecoli.fasta"
 set TRUTH_BAM $DATA_SRC_PTH"test_data/Microbial.truth_2_shasta.test_Ecoli.bam"
@@ -42,3 +50,5 @@ python3 1_pepper_make_images.py \
       --truth_bam $TRUTH_BAM \
       --output_dir $IMAGE_OUTPUT_PTH"test_images" \
       --threads $NUM_THREADS
+
+echo "Done"
