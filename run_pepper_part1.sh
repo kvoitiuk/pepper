@@ -9,6 +9,7 @@ set NUM_THREADS 30
 
 #Validation images--------------------------------------
 echo "Generating Validation Images"
+
 set BAM $DATA_SRC_PTH"validation_data/Microbial.readsR10NativeG01a_to_shastaR94G305.validate_StaphAur.bam"
 set DRAFT $DATA_SRC_PTH"validation_data/Microbial.shasta_assembly_validate_staph_aur.fasta"
 
@@ -48,6 +49,7 @@ python3 1_pepper_make_images.py \
       --bam $BAM \
       --draft $DRAFT \
       --truth_bam $TRUTH_BAM \
+      --train_mode \
       --output_dir $IMAGE_OUTPUT_PTH"test_images" \
       --threads $NUM_THREADS
 
