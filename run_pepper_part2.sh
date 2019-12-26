@@ -19,7 +19,7 @@ python3 1_pepper_make_images.py \
       --bam $BAM \
       --draft $DRAFT \
       --truth_bam $TRUTH_BAM \
-      --train_mode \
+      --train_mode true \
       --output_dir $IMAGE_OUTPUT_PTH"test_images" \
       --threads $NUM_THREADS
 
