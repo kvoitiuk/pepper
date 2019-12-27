@@ -6,16 +6,16 @@ set MODEL_PTH "model_out/trained_models_12262019_131929/_epoch_23_checkpoint.pkl
 set OUTPUT_PTH "polished_sequences/_epoch_23_output_polished_sequence/"
 
 #Inference
-python3 2_pepper_call_consensus.py \
--i $SRC_PTH"validation_images/" \
--m $SRC_PTH$MODEL_PTH  \
--b 512 \
--w $NUM_THREADS \
--o $SRC_PTH$OUTPUT_PTH \
--g
+#python3 2_pepper_call_consensus.py \
+#-i $SRC_PTH"validation_images/" \
+#-m $SRC_PTH$MODEL_PTH  \
+#-b 512 \
+#-w $NUM_THREADS \
+#-o $SRC_PTH$OUTPUT_PTH \
+#-g
 
 #Stitch
 python3 3_pepper_stitch.py \
 -i $SRC_PTH$OUTPUT_PTH"pepper_predictions.hdf" \
--o -i $SRC_PTH$OUTPUT_PTH \
+-o $SRC_PTH$OUTPUT_PTH \
 -t $NUM_THREADS
